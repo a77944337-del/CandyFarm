@@ -1,6 +1,6 @@
 
 -- Driving Empire Halloween Candy Farm
--- K: START | J: STOP | RightShift: SHOW / HIDE
+-- K: START | J: STOP | RightShift: UI
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -49,7 +49,7 @@ make("UICorner", {
     CornerRadius = UDim.new(0, 12)
 }, frame)
 
-make("TextLabel", {
+local title = make("TextLabel", {
     Size = UDim2.fromOffset(250, 40),
     BackgroundTransparency = 1,
     Text = "HALLOWEEN CANDY FARM",
@@ -115,6 +115,11 @@ local stopBtn = button(
     Color3.fromRGB(200, 65, 65)
 )
 
+local unloadBtn = button(
+    "UNLOAD", 166,
+    Color3.fromRGB(85, 85, 100)
+)
+
 make("TextLabel", {
     Size = UDim2.fromOffset(130, 34),
     Position = UDim2.fromOffset(20, 119),
@@ -141,11 +146,6 @@ make("UICorner", {
     CornerRadius = UDim.new(0, 6)
 }, speedBox)
 
-local unloadBtn = button(
-    "UNLOAD", 166,
-    Color3.fromRGB(85, 85, 100)
-)
-
 local info = make("TextLabel", {
     Size = UDim2.fromOffset(270, 22),
     Position = UDim2.fromOffset(10, 207),
@@ -156,7 +156,7 @@ local info = make("TextLabel", {
     TextSize = 11
 }, content)
 
-make("TextLabel", {
+local hint = make("TextLabel", {
     Size = UDim2.fromOffset(270, 18),
     Position = UDim2.fromOffset(10, 229),
     BackgroundTransparency = 1,
@@ -196,6 +196,7 @@ local function getCandies()
         if obj:IsA("BasePart") then
             local name = obj.Name:upper()
 
+            -- Pumpkin inside Spookfest2026Pumpkin
             if name == "PUMPKIN"
             and obj.Parent
             and obj.Parent.Name:upper()
@@ -212,7 +213,7 @@ local function getCandies()
         end
     end
 
-    -- Priority: Pumpkin > Lolly > Candy
+    -- Priority order
     for _, obj in ipairs(pumpkins) do
         table.insert(result, obj)
     end
@@ -237,9 +238,7 @@ local function stopFarm()
 end
 
 local function startFarm()
-    if running or unloaded then
-        return
-    end
+    if running or unloaded then return end
 
     running = true
     session += 1
@@ -294,17 +293,17 @@ local function startFarm()
     end)
 end
 
--- TP delay input
+-- TP speed input
 table.insert(connections,
     speedBox.FocusLost:Connect(function()
         local n = tonumber(speedBox.Text)
 
         if n and n >= 0.1 and n <= 10 then
             delayTime = n
+            print("[Candy Farm] TP Delay:", n)
         end
 
         speedBox.Text = tostring(delayTime)
-        print("[Candy Farm] TP Delay:", delayTime)
     end)
 )
 
@@ -319,9 +318,7 @@ table.insert(connections,
 
 -- Unload
 local function unload()
-    if unloaded then
-        return
-    end
+    if unloaded then return end
 
     stopFarm()
     unloaded = true
@@ -347,25 +344,19 @@ table.insert(connections,
 -- Keyboard controls
 table.insert(connections,
     UIS.InputBegan:Connect(function(input, processed)
-        if unloaded then
-            return
-        end
-
-        if UIS:GetFocusedTextBox() then
-            return
-        end
+        if unloaded then return end
+        if UIS:GetFocusedTextBox() then return end
 
         if input.KeyCode == Enum.KeyCode.RightShift then
             gui.Enabled = not gui.Enabled
             return
         end
 
-        if processed then
-            return
-        end
+        if processed then return end
 
         if input.KeyCode == Enum.KeyCode.K then
             startFarm()
+
         elseif input.KeyCode == Enum.KeyCode.J then
             stopFarm()
         end
