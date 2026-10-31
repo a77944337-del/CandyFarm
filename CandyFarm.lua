@@ -146,10 +146,10 @@ local function startFarm()
                     root.CFrame = candy.CFrame * CFrame.new(0, 2, 0)
                     info.Text = "TARGET: " .. candy.Name .. "\nTP DELAY: 2 SECONDS"
                     print("[Candy TP]", candy:GetFullName())
-                    task.wait(2)
+                    task.wait(1)
                 end
             end
-            task.wait(2)
+            task.wait(1)
         end
     end)
 end
